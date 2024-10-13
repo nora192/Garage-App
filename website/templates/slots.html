@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Avalable Slots{% endblock %}
+
+{% block content %}
+<h1>Welcome to the available slots page</h1>
+{% for slot in slots %}
+       
+    <div class="card">
+        <h3>Slot {{ slot['slot_id'] }} - {{ slot['location'] }}</h3>
+        <p>Slot Category : {{ slot['category'] }}</p>
+        <p>Price per hour: ${{ slot['price_per_hour'] }}</p>
+        <a class="link-success m-auto me-0" href="{{ url_for('views.slot_details', slot_id=slot['slot_id']) }}">see when this slot is available</a>
+    </div>
+          
+{% endfor %}
+
+
+{% endblock %}

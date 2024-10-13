@@ -1,0 +1,21 @@
+[
+  {
+    "slot_id": 1,
+    "location": "Lot A",
+    "category": "Compact",
+    "price_per_hour": 5,
+    "booked_times": {
+      
+    }
+  },
+
+  {
+    "slot_id": 2,
+    "location": "Lot B",
+    "category": "SUV",
+    "price_per_hour": 8,
+    "booked_times": {
+      "2024-10-15": ["10:00", "11:00"]
+    }
+  }
+]
