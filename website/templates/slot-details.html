@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Avalable Slots{% endblock %}
+
+{% block content %}
+<h1>Welcome to the slot details page</h1>
+
+<div style="background-color: gray;">
+    <h3>Slot {{ slot['slot_id'] }} - {{ slot['location'] }}</h3>
+    <p>Slot Category : {{ slot['category'] }}</p>
+    <p>Price per hour: ${{ slot['price_per_hour'] }}</p>
+</div>
+
+<h2>Available Times:</h2>
+<div class="available-times">
+  {% for date, times in available_times.items() %}
+    <div class="card mb-3">
+      <div class="card-header">
+        {{ date }}
+      </div>
+      <div class="card-body">
+        {% for time in times %}
+          <p class="card-text">{{ time }} 
+             <a href="/book-slot/{{ slot['slot_id'] }}/{{ date }}/{{ time }}" class="btn btn-primary">Book</a>
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+
+
+{% endblock %}
