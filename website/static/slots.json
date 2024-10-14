@@ -17,5 +17,65 @@
     "booked_times": {
       "2024-10-15": ["10:00", "11:00"]
     }
+  },
+
+  {
+    "slot_id": 3,
+    "location": "Lot C",
+    "category": "Compact",
+    "price_per_hour": 6,
+    "booked_times": {
+      
+    }
+  },
+
+  {
+    "slot_id": 4,
+    "location": "Lot D",
+    "category": "SUV",
+    "price_per_hour": 8,
+    "booked_times": {
+      "2024-10-15": ["10:00", "11:00"]
+    }
+  },
+
+  {
+    "slot_id": 5,
+    "location": "Lot E",
+    "category": "Motorcycle",
+    "price_per_hour": 5,
+    "booked_times": {
+      
+    }
+  },
+
+  {
+    "slot_id": 6,
+    "location": "Lot F",
+    "category": "SUV",
+    "price_per_hour": 8,
+    "booked_times": {
+      "2024-10-15": ["10:00", "11:00"]
+    }
+  },
+
+  {
+    "slot_id": 7,
+    "location": "Lot G",
+    "category": "Truck",
+    "price_per_hour": 5,
+    "booked_times": {
+      
+    }
+  },
+
+  {
+    "slot_id": 8,
+    "location": "Lot H",
+    "category": "Truck",
+    "price_per_hour": 8,
+    "booked_times": {
+      "2024-10-15": ["10:00", "11:00"]
+    }
   }
 ]

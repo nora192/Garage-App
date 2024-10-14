@@ -2,15 +2,69 @@
 {% block title %}Avalable Slots{% endblock %}
 
 {% block content %}
-<h1>Welcome to the available slots page</h1>
-{% for slot in slots %}
-       
-    <div class="card">
-        <h3>Slot {{ slot['slot_id'] }} - {{ slot['location'] }}</h3>
-        <p>Slot Category : {{ slot['category'] }}</p>
-        <p>Price per hour: ${{ slot['price_per_hour'] }}</p>
-        <a class="link-success m-auto me-0" href="{{ url_for('views.slot_details', slot_id=slot['slot_id']) }}">see when this slot is available</a>
+
+
+<!-- HTML: Filter Section -->
+<div class="filter">
+    <div>
+        <label for="category-filter">Filter by category: </label>
+        <select name="category-filter" id="category-filter">
+            <option value="all">All Categories</option>
+            <option value="Compact">Compact</option>
+            <option value="Motorcycle">Motorcycle</option>
+            <option value="SUV">SUV</option>
+            <option value="Truck">Truck</option>
+        </select>
     </div>
-          
-{% endfor %}
+    
+    <div>
+        <label for="price-filter">Max Price (per hour):</label>
+        <div>
+            <input type="range" id="price-filter" min="0" max="20" step="1" value="20">
+            <span id="price-value">20</span>
+        </div>
+        
+    </div>
+    
+</div>
+
+
+
+
+
+<section class="articles">
+    <div class="container">
+        <div class="section-intro">
+            <h2>Available Slots</h2>
+        </div>
+        <div id="slots-container" class="content">
+            {% for slot in slots %}
+            <article class="card">
+                <h4>Slot {{ slot['slot_id'] }} - {{ slot['location'] }}</h4>
+                <p>Slot Category : {{ slot['category'] }}</p>
+                <p>Price per hour: ${{ slot['price_per_hour'] }}</p>
+
+                <div class="availability-time">
+                    <a href="{{ url_for('views.slot_details', slot_id=slot['slot_id']) }}">see when this slot is available</a>
+                    <a href="{{ url_for('views.slot_details', slot_id=slot['slot_id']) }}">
+                        <i class="fas fa-long-arrow-alt-right" ></i>
+                    </a>
+                    
+                    
+                </div>
+
+            </article>
+                  
+            {% endfor %}
+        </div>
+
+
+    </div>
+</section>
+
+
+
+
+
+<script src="../static/js/slot-filtering.js"></script>
 {% endblock %}

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import random
-from flask import Blueprint, jsonify, render_template
+from flask import Blueprint, jsonify, render_template, request
 import json
 
 views = Blueprint('views', __name__)
@@ -31,7 +31,7 @@ def generate_available_times(slot, days_in_advance=7):
 
 @views.route("/")
 def home():
-    return "here is the home page"
+    return render_template("home.html")
 
 @views.route("/available-slots", methods=['GET'])
 def available_slots():
@@ -51,5 +51,19 @@ def slot_details(slot_id):
     else:
         return "Slot not found", 404
 
+
+@views.route("/filter-slots")
+def filter_slots():
+    slots = load_slots()
+    category = request.args.get("category", "all")
+    price = request.args.get("price_per_hour", None)
+
+    if category != "all":
+        slots = [slot for slot in slots if slot['category'] == category]
+    
+    if price:
+        slots = [slot for slot in slots if slot['price_per_hour'] <= float(price)]
+    
+    return jsonify(slots)
 
 
