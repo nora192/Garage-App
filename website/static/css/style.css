@@ -634,5 +634,63 @@ main a i{
 
 /* end filter */
 
+/* start slotDetails */
 
 
+
+.slot-details{
+    display: flex;
+    justify-content: space-around;
+    /* flex-wrap: wrap; */
+}
+
+.slot-info{
+    display: flex;
+    flex-direction: column;
+    flex-basis: 50%;
+    /* align-content: center; */
+    justify-content: center;
+    align-items: center;
+}
+
+.slot-cards{
+    display: flex;
+    flex-basis: 50%;
+
+}
+
+.available-times{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 20px;
+}
+.card{
+    border-radius: 25px;
+    background-color: white;
+    box-shadow: 0 2px 15px rgb(0 0 0 / 10%);
+    transition: var(--main-transition);
+    padding: 25px;
+    margin-bottom: 16px;
+}
+
+.card:hover{
+    transform: translateY(-10px);
+    box-shadow: 0 2px 15px rgb(0 0 0 / 20%);
+}
+
+.card-header{
+    text-align: center;
+    color: #ef6f20;
+    font-size: large;
+    font-weight: 600;
+}
+
+.card-body{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+
+/* end slotDetails */

@@ -4,21 +4,33 @@ document.addEventListener("DOMContentLoaded", function() {
     const priceFilter = document.getElementById("price-filter");
     const priceValue = document.getElementById("price-value");
 
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    document.getElementById("date").value = formattedDate;
+    const dateFilter = document.getElementById("date");
+
     // Update price value display
     priceFilter.addEventListener("input", function() {
         priceValue.textContent = priceFilter.value;
         filterSlotCards();
     });
 
+
     // Apply filters when the category filter changes
     categoryFilter.addEventListener("change", filterSlotCards);
+
+    dateFilter.addEventListener("input", filterSlotCards);
+
+
 
     function filterSlotCards(){
         const categorySelected = categoryFilter.value;
         const maxPrice = priceFilter.value;
+        const date = new Date(dateFilter.value);
+        const formattedDate = date.toISOString().split('T')[0];
 
         const xhr = new XMLHttpRequest();
-        xhr.open("Get", `/filter-slots?category=${categorySelected}&price_per_hour=${maxPrice}`, true);
+        xhr.open("Get", `/filter-slots?category=${categorySelected}&price_per_hour=${maxPrice}&date=${formattedDate}`, true);
 
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){

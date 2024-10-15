@@ -29,6 +29,16 @@ def generate_available_times(slot, days_in_advance=7):
     return available_times
 
 
+def get_available_slots_days(slots, date):
+    available_slots = []
+    for slot in slots:
+        booked_times = slot['booked_times'].get(date, [])
+
+        if len(booked_times) < 2:
+            available_slots.append(slot)
+    return available_slots
+
+
 @views.route("/")
 def home():
     return render_template("home.html")
@@ -57,12 +67,21 @@ def filter_slots():
     slots = load_slots()
     category = request.args.get("category", "all")
     price = request.args.get("price_per_hour", None)
+    date_str  = request.args.get("date", None)
+    print(date_str)
 
+    # use current date incase of no provided date
+    date = date_str if date_str else datetime.now().strftime("%Y-%m-%d")
+
+    
     if category != "all":
         slots = [slot for slot in slots if slot['category'] == category]
     
+    slots = get_available_slots_days(slots, date)
+    
     if price:
         slots = [slot for slot in slots if slot['price_per_hour'] <= float(price)]
+    
     
     return jsonify(slots)
 
