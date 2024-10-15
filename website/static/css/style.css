@@ -694,3 +694,23 @@ main a i{
 
 
 /* end slotDetails */
+
+
+/* start timegrid */
+
+.time-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+}
+.available {
+    background-color: green;
+    color: white;
+    padding: 10px;
+}
+.unavailable {
+    background-color: gray;
+    color: lightgray;
+    padding: 10px;
+}
+
+/* end timegrid */

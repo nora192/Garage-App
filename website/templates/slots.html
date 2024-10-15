@@ -30,7 +30,7 @@
 
     <div class="day-filter">
         <label for="date">select day</label>
-        <input type="date" id="date" name="date">
+        <input type="date" id="date" name="date" value="{{ today }}" >
     </div>
   
   <!-- end filtering by day -->
@@ -54,8 +54,8 @@
                 <p>Price per hour: ${{ slot['price_per_hour'] }}</p>
 
                 <div class="availability-time">
-                    <a href="{{ url_for('views.slot_details', slot_id=slot['slot_id']) }}">see when this slot is available</a>
-                    <a href="{{ url_for('views.slot_details', slot_id=slot['slot_id']) }}">
+                    <a href="{{ url_for('views.slot_details', slot_id=slot['slot_id'], date=today) }}">see when this slot is available</a>
+                    <a href="{{ url_for('views.slot_details', slot_id=slot['slot_id'], date=today) }}">
                         <i class="fas fa-long-arrow-alt-right" ></i>
                     </a>
                     
