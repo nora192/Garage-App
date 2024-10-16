@@ -573,7 +573,7 @@ main a i{
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background-color: #f8f9fa; /* Light gray background */
+    background-color: #f8f9fa; 
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
@@ -589,14 +589,14 @@ main a i{
 
 .filter label {
     font-weight: bold;
-    color: #343a40; /* Darker text color for readability */
+    color: #343a40; 
 }
 
 .filter select, 
 .filter input[type="range"] {
     border-radius: 6px;
-    border: 1px solid #ced4da; /* Light border */
-    background-color: #ffffff; /* White background for inputs */
+    border: 1px solid #ced4da; 
+    background-color: #ffffff; 
     font-size: 1rem;
 }
 
@@ -614,8 +614,8 @@ main a i{
 
 .filter span {
     font-weight: bold;
-    color:  #fc6606;; /* Highlighted blue color */
-    font-size: 1.2rem; /* Slightly larger text for price */
+    color:  #fc6606;
+    font-size: 1.2rem; 
 }
 
 .filter div select {

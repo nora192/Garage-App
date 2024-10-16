@@ -9,6 +9,10 @@ def load_slots():
         slots = json.load(f)
     return slots
 
+def load_users():
+    with open('users.json', 'r') as f:
+        users = json.load(f)
+    return users
 
 # helper function to get available hours within the day
 def generate_available_times(slot, date):
@@ -45,3 +49,34 @@ def available_range(slot, date, start, end):
             return False
 
     return True
+
+# helper function to save user object in json file
+def save_user(user, fileName):
+    user_date = user.to_dict()
+    try:
+        with open(fileName, 'r') as file:
+            try:
+                users = json.load(file)  
+            except json.JSONDecodeError:
+                users = []
+    except FileNotFoundError:
+        users = []
+    users.append(user_date)
+    with open(fileName, 'w') as file:
+        json.dump(users, file, indent=4)
+
+
+def is_found(email):
+    users = load_users()
+    for user in users:
+        if email == user['email']:
+            return True
+    return False
+
+
+def get_user(email):
+    users = load_users()
+    for user in users:
+        if user['email'] == email:
+            return user
+    return None

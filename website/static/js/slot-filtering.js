@@ -49,8 +49,8 @@ document.addEventListener("DOMContentLoaded", function() {
                             
                             
                             <div class="availability-time">
-                                <a href="/slot-details/${slot.slot_id}?date=${formattedDate}">see when this slot is available</a>
-                                <a href="/slot-details/${slot.slot_id}?date=${formattedDate}">
+                                <a href="/slot-details/${slot.slot_id}/${formattedDate}">see when this slot is available</a>
+                                <a href="/slot-details/${slot.slot_id}/${formattedDate}">
                                     <i class="fas fa-long-arrow-alt-right" ></i>
                                 </a>
                             </div>

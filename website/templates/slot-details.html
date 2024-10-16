@@ -17,39 +17,7 @@
     </div>
   
   </div>
-<!-- 
-  <div class="available-times">
-    <article class="card">
-      <div class="card-header">
-        {{ date }}
-      </div>
-      <div class="card-body">
-        {% for time in available_times %}
-          <p class="card-text">{{ time }} 
-            <a href="/book-slot/{{ slot['slot_id'] }}/{{ date }}/{{ time }}" class="btn btn-primary">Book</a>
-          </p>
-        {% endfor %}
-      </div>
-    </article>
-  </div>
 
-</div> -->
-
-
-<!-- <div class="time-grid">
-  {% for time in available_times %}
-      <span class="{% if time in booked_times %} unavailable {% else %} available {% endif %}">
-          {{ time }}
-      </span>
-  {% endfor %}
-</div>
-
-<div class="booking-summary">
-  <p>Booking Slot: {{ slot['slot_id'] }}</p>
-  <p>Selected Time Range: <span id="selected-range"></span></p>
-  <p>Total Price: <span id="total-price"></span></p>
-  <a href="#" class="btn btn-success" id="confirm-booking">Confirm Booking</a>
-</div> -->
 
 <div class="time-range-selection">
   <label for="start-time">Select Start Time:</label>

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Sign Up Success{% endblock %}
+
+{% block content %}
+    <script>
+        const email = "{{ email }}";
+        localStorage.setItem("userEmail", email);
+        console.log("Email stored in localStorage:", localStorage.getItem("userEmail"));
+    </script>
+{% endblock %}
