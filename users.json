@@ -61,5 +61,19 @@
         "lastName": "Hussein",
         "phoneNumber": "0123456789",
         "password": "pbkdf2:sha256:600000$9fT7vxuUd2DZ3KV1$14cafe15b1bd94551a45d6c96c99900d422bced03ecf2d26c4c81284b412a6cb"
+    },
+    {
+        "email": "noramohammmed5121@gmail.com",
+        "firstName": "noraa",
+        "lastName": "Hussein",
+        "phoneNumber": "0123456789",
+        "password": "pbkdf2:sha256:600000$7j87n4XaIImcR6yK$75b4acca3a329c852280e6bf03aed1ad9577483e2b26ad685dea024faeb2dc39"
+    },
+    {
+        "email": "noramohamed555121@gmail.com",
+        "firstName": "noraa",
+        "lastName": "Hussein",
+        "phoneNumber": "0123456789",
+        "password": "pbkdf2:sha256:600000$EXvApgVAQQyWbz01$fbe3d866a6be012dffd3b63d437a65f4af08ab966dcd1cf3315c88f2bc5e336e"
     }
 ]

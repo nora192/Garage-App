@@ -1,3 +1,4 @@
+console.log("auth");
 form.addEventListener("submit", e => {
     if (!validateInput()) {
         e.preventDefault(); 

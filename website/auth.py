@@ -30,8 +30,9 @@ def logIn():
 
 @auth.route("/sign-up", methods=['GET', 'POST'])
 def signUp():
+    print("sign up")
     if request.method == 'POST':
-
+        print("sign up post")
         email = request.form.get('email')
         firstName = request.form.get('firstName')
         lastName = request.form.get('lastName')
@@ -44,6 +45,7 @@ def signUp():
         if len(email) < 4:
             flash("Email must be greater than 3 characters.", category='error')
         elif(is_found(email)):
+            print("Email is already registered before")
             flash("Email is already registered before", category='error')
         elif len(firstName) < 2:
             flash("First name must be greater than 1 character.", category='error')
