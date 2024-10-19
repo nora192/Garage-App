@@ -2,6 +2,8 @@ from datetime import datetime, date
 from flask import Blueprint, jsonify, render_template, request
 import json
 
+from website.models import User
+
 
 # helper function to load data
 def load_slots():
@@ -57,7 +59,7 @@ def save_user(user, fileName):
         with open(fileName, 'r') as file:
             try:
                 users = json.load(file)  
-            except json.JSONDecodeError:
+            except json.JSONDecodeError:   # users is null
                 users = []
     except FileNotFoundError:
         users = []
@@ -80,3 +82,34 @@ def get_user(email):
         if user['email'] == email:
             return user
     return None
+
+def saveBooking(location, userEmail, date, start, end):
+    slots = load_slots()
+
+    for s in slots:
+        if s['location'] == location:
+
+            if date not in s['booked_times']:
+                s['booked_times'][date] = []
+
+            for i in range(start, end+1):
+                timeStr = str(i) + ":00"
+                s['booked_times'][date].append(timeStr)
+            
+    
+    with open("website/static/slots.json", "w") as f:
+        json.dump(slots, f)
+    
+    user = get_user(userEmail)
+    # userObj = User(userEmail, user['firstName'], user['lastName'], user['phoneNumber'], user['password'])
+    # userObj.book(date, start, end)
+    
+    users = load_users()
+    for u in users:
+        if u['email'] == user['email']:
+            u['bookedSlots'].append({"location": location, "date": date, "start": start, "end": end})
+
+    with open("users.json", "w") as f:
+        json.dump(users, f)
+
+

@@ -30,9 +30,8 @@ def logIn():
 
 @auth.route("/sign-up", methods=['GET', 'POST'])
 def signUp():
-    print("sign up")
+    
     if request.method == 'POST':
-        print("sign up post")
         email = request.form.get('email')
         firstName = request.form.get('firstName')
         lastName = request.form.get('lastName')
@@ -71,10 +70,11 @@ def signUp():
 
 @auth.route("/log-out")
 def logOut():
-    return render_template("logout.html")
+    flash("you have logged out", "success")
+    return render_template("slots.html")
 
 
 @auth.route("/auth-success")
 def auth_success():
     email = request.args.get('email')
-    return render_template("auth_success.html", email=email)
+    return render_template("slots.html", email=email)

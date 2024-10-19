@@ -27,8 +27,9 @@ class User:
             'password': self.password
         }
 
-    def book(self, date, time):
-        self.booked_times[date].append(time)
+    # def book(self, date, start, end):
+
+    #     self.bookedSlots.append(slot)
 
 class Slot:
     def __init__(self, location, category, price_per_hour, booked_times):
@@ -69,3 +70,20 @@ class Slot:
         if date not in self.booked_times:
             self.booked_times[date] = []
         self.booked_times[date].append(time)
+    
+class Book:
+
+
+    def __init__(self, slot, user, date, start, end):
+        self.slot = slot
+        self.user = user
+        self.date = date
+        self.start = start
+        self.end = end
+    
+    def book(self):
+        startInt = int(self.start.split(":")[0])
+        endInt = int(self.end.split(":")[0])            
+        self.totalPrice = (endInt - startInt) * self.slot.price_per_hour
+    
+

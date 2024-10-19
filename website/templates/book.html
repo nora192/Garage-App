@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Book{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <h1>Confirm Reservation</h1>
+    <p>Slot Location: {{book.slot['location']}}</p>
+    <p>Slot Category: {{ book.slot['category'] }}</p>
+    <p>Price per Hour: {{ book.slot['price_per_hour'] }} </p>
+    <p>Date: {{ book['date'] }} </p>
+    <p>Total Price from {{book['start']}} to {{ book['end'] }} : {{ book['totalPrice'] }} </p>
+
+    <a href="{{ url_for('views.confirmBooking') }}" class="btn btn-primary">Confirm</a>
+
+
+
+
+
+</div>
+
+{% endblock %}

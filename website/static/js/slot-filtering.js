@@ -102,7 +102,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 checkUnavailableSlots(startTime, endTime, location, date, function(available){
                     if(available){
                         console.log("available");
-                        // window.location.href = `/book-slot/${location}/${date}/${startTime}/${endTime}`;
+                        const email = localStorage.getItem('userEmail');
+                        if(email){
+                            window.location.href = `/book?location=${location}&date=${date}&start=${startTime}&end=${endTime}&email=${email}`;   
+                        }
+                        else{
+                            alert("u need to be logged in first");
+                        }
                     } else {
                         alert("Some hours in the selected range are unavailable.");
                         event.preventDefault();
@@ -110,6 +116,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             });
         });
+
+
     }
 
     // Function to check the availability of the selected time range

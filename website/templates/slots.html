@@ -4,7 +4,29 @@
 {% block content %}
 
 
+{% if email %}
+<script>
+    const email = "{{ email }}";
+    localStorage.setItem("userEmail", email);
+    console.log("Email stored in localStorage:", localStorage.getItem("userEmail"));
+</script>
+
+{% else %}
+<script>
+    const userEmail = localStorage.getItem("userEmail");
+    if(userEmail){
+        localStorage.removeItem("userEmail");
+    }
+</script>
+
+{% endif %}
+
+
+
+
+
 <!-- HTML: Filter Section -->
+
 <div class="filter">
     <div>
         <label for="category-filter">Filter by category: </label>

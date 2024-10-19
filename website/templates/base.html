@@ -39,9 +39,14 @@
                 <ul>
                     <li><a id="home" href="/">Home</a></li>
 
-                    <li><a id="login" href="/login">Login</a></li>
+                    {% if email %}
                     <li><a id="logout" href="/log-out">Logout</a></li>
+                    {% else %}
+                    <li><a id="login" href="/login">Login</a></li>
                     <li><a id="signUp" href="/sign-up">Sign Up</a></li>
+                    {% endif %}
+
+                    
 
                 </ul>
             </nav>

@@ -1,9 +1,9 @@
 from datetime import datetime, date
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, jsonify, redirect, render_template, request, session
 import json
 
-from helpers import available_range, generate_available_times, get_available_slots_days, load_slots
-from website.models import Slot
+from helpers import available_range, generate_available_times, get_available_slots_days, get_user, load_slots, load_users, saveBooking
+from website.models import Book, Slot, User
 
 
 views = Blueprint('views', __name__)
@@ -77,5 +77,68 @@ def check_range():
     return jsonify({"available" : False})
 
 
+@views.route("/book")
+def book():
+
+    location = request.args.get("location")
+    start = request.args.get("start")
+    end = request.args.get("end")
+    date = request.args.get("date")
+    user_email = request.args.get("email")
+
+    slots = load_slots()
+    
+    target_slot = next((slot for slot in slots if slot['location'] == location), None)
+    
+    slot = Slot(location, target_slot['category'], target_slot['price_per_hour'], target_slot['booked_times'])
+    print("target_slot", target_slot)
+
+    user = get_user(user_email)
+
+    print("user", user)
+    book = Book(slot, user, date, start, end)
+    book.book()
+    print("book", book)
+
+
+    session['booking'] = {
+        'location': slot.location,
+        'category': slot.category,
+        'price_per_hour': slot.price_per_hour,
+        'booked_times' : slot.booked_times,
+        'date': date,
+        'start': start,
+        'end': end,
+        'totalPrice': book.totalPrice,
+        'user_email': user['email']
+    }
+    
+    return render_template("book.html", book = book)
+
+
+@views.route("/confirm-booking")
+def confirmBooking():
+    booking = session.get('booking')
+
+    slot = Slot(booking['location'], booking['category'], booking['price_per_hour'], booking['booked_times'])
+
+    start = int(booking['start'].split(":")[0])
+    end = int(booking['end'].split(":")[0])
+
+    saveBooking(booking['location'], booking['user_email'], booking['date'], start, end)
+
+    return redirect("/")
+
+
+
+    
+    
+    
+
+    
+
+
+
+    
 
 
