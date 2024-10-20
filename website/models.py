@@ -44,6 +44,8 @@ class Slot:
         if date is None:
             today = datetime.today()
             date = today.strftime('%Y-%m-%d')
+        
+        print("date", date)
 
         self.available_times = []
 
@@ -52,7 +54,7 @@ class Slot:
         booked_for_date = self.booked_times.get(date, [])
 
         self.available_times = [time for time in all_times if time not in booked_for_date]
-
+        print("available_times", self.available_times)
         return self.available_times
 
     def to_dict(self, date=None):
@@ -62,7 +64,8 @@ class Slot:
             'category': self.category,
             'price_per_hour': self.price_per_hour,
             'booked_times': self.booked_times,
-            'available_times': self.available_times
+            'available_times': self.available_times,
+            'date' : date
         }
 
     def book(self, date, time):

@@ -109,6 +109,15 @@
                     <li><a id="signUp" href="/sign-up">Sign Up</a></li>
                 `;
             }
+
+
+            setTimeout(function() {
+                const flashMessages = document.querySelectorAll('.alert');
+                flashMessages.forEach(function(message) {
+                    message.classList.remove('show');  
+                    // message.classList.add('fade');     
+                });
+            }, 3000);  
         });
     </script>
     

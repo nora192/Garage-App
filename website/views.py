@@ -20,9 +20,6 @@ def available_slots():
     for slot in slots:
         slotObj = Slot(slot['location'], slot['category'], slot['price_per_hour'], slot['booked_times'])
         slotsList.append(slotObj)
-
-
-
     return render_template("slots.html", slots=slotsList, today=today)
 
 
@@ -91,6 +88,7 @@ def book():
     target_slot = next((slot for slot in slots if slot['location'] == location), None)
     
     slot = Slot(location, target_slot['category'], target_slot['price_per_hour'], target_slot['booked_times'])
+    slot.generate_available_times(date)
 
     user = get_user(user_email)
 
@@ -103,6 +101,7 @@ def book():
         'category': slot.category,
         'price_per_hour': slot.price_per_hour,
         'booked_times' : slot.booked_times,
+        'available_times' : slot.available_times,
         'date': date,
         'start': start,
         'end': end,
@@ -125,7 +124,7 @@ def confirmBooking():
     return redirect("/")
 
 @views.route("/profile")
-def profilr():
+def profile():
     email = session.get('email')
     user = get_user(email)
     return render_template("profile.html", user=user)
@@ -147,27 +146,54 @@ def cancelBooking():
 
     flash("failed to delete the slot", "error")          
     return redirect("/profile")
-         
 
 
+@views.route("/edit", methods=['GET', 'POST'])
+def edit():
+    if request.method == "GET":
+        # Get existing booking data
+        start = request.args.get("start")
+        end = request.args.get("end")
+        email = request.args.get("email")
+        location = request.args.get("location")
+        date = request.args.get("date")
+        category = request.args.get("category")
 
+        slots = load_slots()
+        target_slot = None
+
+        for slot in slots:
+            if slot['location'] == location:
+                target_slot = Slot(location, category, slot['price_per_hour'], slot['booked_times'])
+                target_slot.generate_available_times(date)
+
+        if target_slot:
+            return render_template("edit.html", slot=target_slot.to_dict(date), start=start, end=end)
+        else:
+            return "Slot not found", 404 
+
+    elif request.method == "POST":
+        location = request.form.get("location")
+        new_start = request.form.get("start-time")
+        new_end = request.form.get("end-time")
+        date = request.form.get("date")
+        email = request.form.get("email")
+        category = request.form.get("category")
+
+        slots = load_slots()
+        target_slot = next((slot for slot in slots if slot['location'] == location), None)
+
+        old_start = request.form.get("old-start")
+        old_end = request.form.get("old-end")
+
+        # Remove the old booking from the slots file and user file
+        removeSlotFromSlotsFile(location, int(old_start), int(old_end), date)
+        removeSlotFromUserFile(email, int(old_start), int(old_end), location, date)
+
+        # Add new booking
+        if available_range(target_slot, date, new_start, new_end):
+            saveBooking(location, email, date, int(new_start.split(":")[0]), int(new_end.split(":")[0]), category)
+            return jsonify({"status": "success", "message": "Booking updated successfully!"})
+        else:
+            return jsonify({"status": "error", "message": "The selected time range is not available."})
     
-
-
-
-
-
-
-
-
-    
-    
-    
-
-    
-
-
-
-    
-
-

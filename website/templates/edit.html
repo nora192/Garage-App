@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Edit Booking{% endblock %}
+
+{% block content %}
+
+<h3>Edit Your Booking</h3>
+
+<p id="location">Slot Location: {{ slot['location'] }}</p>
+<p>Slot Category: {{ slot['category'] }}</p>
+<p>Price per Hour: {{ slot['price_per_hour'] }} </p>
+<p id="date">Date: {{ slot['date'] }} </p>
+
+<!-- Time Range Selection -->
+<div class="time-range-selection">
+    <div id="error-message" style="display:none; color: red;"></div>
+    <form  id="bookingForm" method="POST" action="{{ url_for('views.edit') }}">
+        <label for="start-time">Select Start Time:</label>
+        <select class="start-time" name="start-time" required>
+            {% for time in slot['available_times'] %}
+                <option value="{{ time }}" {% if time == start %}selected{% endif %}>{{ time }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="end-time">Select End Time:</label>
+        <select class="end-time" name="end-time" required>
+            {% for time in slot['available_times'] %}
+                <option value="{{ time }}" {% if time == end %}selected{% endif %}>{{ time }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Hidden fields to pass old booking and other necessary data -->
+        <input type="hidden" name="old-start" value="{{ start }}">
+        <input type="hidden" name="old-end" value="{{ end }}">
+        <input type="hidden" name="location" value="{{ slot['location'] }}">
+        <input type="hidden" name="email" value="{{ session['email'] }}">
+        <input type="hidden" name="category" value="{{ slot['category'] }}">
+        <input type="hidden" name="date" value="{{ slot['date'] }}">
+
+        <button type="submit" class="btn btn-primary book-range">Update Booking</button>
+    </form>
+</div>
+
+<a href="{{ url_for('views.profile') }}" class="btn btn-secondary">Cancel</a>
+
+<script src="{{ url_for('static', filename='js/edit.js') }}"></script>
+
+{% endblock %}

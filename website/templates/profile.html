@@ -14,8 +14,11 @@
 <div class="card">
     <h1>{{slot['location']}}</h1>
     <p>{{slot['date']}}</p>
+    <p>{{slot['category']}}</p>
     <p>from {{slot['start']}} to {{ slot['end'] }}</p>
     <a href="{{ url_for('views.cancelBooking') }}?location={{slot['location']}}&start={{slot['start']}}&end={{ slot['end'] }}&date={{slot['date']}}&email={{user['email']}}" class="btn btn-danger">cancel</a>
+    <a href="{{ url_for('views.edit') }}?location={{slot['location']}}&start={{slot['start']}}&end={{ slot['end'] }}&date={{slot['date']}}&email={{user['email']}}&category={{slot['category']}} " class="btn btn-success">Edit</a>
+
     <!-- <button>Edit</button>
     <button>Cancel</button> -->
 </div>
