@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <h1>{{user['firstName']}} {{user['lastName']}}</h1>
+    <p>{{user['email']}}</p>
+    <p>{{user['phoneNumber']}}</p>
+</div>
+
+
+{% for slot in user['bookedSlots'] %}
+<div class="card">
+    <h1>{{slot['location']}}</h1>
+    <p>{{slot['date']}}</p>
+    <p>from {{slot['start']}} to {{ slot['end'] }}</p>
+    <a href="{{ url_for('views.cancelBooking') }}?location={{slot['location']}}&start={{slot['start']}}&end={{ slot['end'] }}&date={{slot['date']}}&email={{user['email']}}" class="btn btn-danger">cancel</a>
+    <!-- <button>Edit</button>
+    <button>Cancel</button> -->
+</div>
+
+
+{% endfor %}
+
+{% endblock %}

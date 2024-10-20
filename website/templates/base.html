@@ -36,15 +36,10 @@
 
             </div>
             <nav class="main-nav">
-                <ul>
+                <ul id="navbar">
                     <li><a id="home" href="/">Home</a></li>
 
-                    {% if email %}
-                    <li><a id="logout" href="/log-out">Logout</a></li>
-                    {% else %}
-                    <li><a id="login" href="/login">Login</a></li>
-                    <li><a id="signUp" href="/sign-up">Sign Up</a></li>
-                    {% endif %}
+                    
 
                     
 
@@ -97,6 +92,25 @@
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.getElementById('navbar');
+            const email = localStorage.getItem('userEmail');
+
+            if (email) {
+                navbar.innerHTML += `
+                    <li><a id="logout" href="/log-out">Logout</a></li>
+                    <li><a id="profile" href="/profile">Profile</a></li>
+                `;
+            } else {
+                navbar.innerHTML += `
+                    <li><a id="login" href="/login">Login</a></li>
+                    <li><a id="signUp" href="/sign-up">Sign Up</a></li>
+                `;
+            }
+        });
+    </script>
     
 </body>
 </html>

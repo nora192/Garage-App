@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from flask import Blueprint, jsonify, render_template, request
+from flask import Blueprint, flash, jsonify, redirect, render_template, request
 import json
 
 from website.models import User
@@ -83,7 +83,7 @@ def get_user(email):
             return user
     return None
 
-def saveBooking(location, userEmail, date, start, end):
+def saveBooking(location, userEmail, date, start, end, category):
     slots = load_slots()
 
     for s in slots:
@@ -101,15 +101,55 @@ def saveBooking(location, userEmail, date, start, end):
         json.dump(slots, f)
     
     user = get_user(userEmail)
-    # userObj = User(userEmail, user['firstName'], user['lastName'], user['phoneNumber'], user['password'])
-    # userObj.book(date, start, end)
+  
     
     users = load_users()
     for u in users:
         if u['email'] == user['email']:
-            u['bookedSlots'].append({"location": location, "date": date, "start": start, "end": end})
+            u['bookedSlots'].append({"location": location, "date": date, "start": start, "end": end, "category" : category})
 
     with open("users.json", "w") as f:
         json.dump(users, f)
+
+
+def removeSlotFromSlotsFile(location, start, end, date):
+    # remove slot booked time from json file
+    is_deleted = False
+    slots = load_slots()
+    for slot in slots:
+        if slot['location'] == location:
+            # Check if the date exists in the booked_times dictionary
+            if date in slot['booked_times']:
+                # Remove the specified times for that date
+                for i in range(int(start), int(end) + 1):
+                    time_slot = f"{i}:00"
+                    if time_slot in slot['booked_times'][date]:
+                        slot['booked_times'][date].remove(time_slot)
+                        is_deleted = True
+                    else:
+                        print(f"Time slot {time_slot} not found")
+    
+    
+    # add to json 
+    with open("website/static/slots.json", "w") as f:
+        json.dump(slots, f)
+    return is_deleted
+
+def removeSlotFromUserFile(email, start, end, location, date):
+    is_deleted = False
+    users = load_users()
+    for user in users:
+        if user['email'] == email:
+            for slot in user['bookedSlots'][:]:
+                if slot['location'] == location and slot['date'] == date and slot['start'] == start and slot['end'] == end:
+                    user['bookedSlots'].remove(slot)
+                    is_deleted = True
+    
+    # add to json 
+    with open("users.json", "w") as f:
+        json.dump(users, f)
+        
+    return is_deleted
+        
 
 

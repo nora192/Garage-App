@@ -1,8 +1,8 @@
 from datetime import datetime, date
-from flask import Blueprint, jsonify, redirect, render_template, request, session
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, session
 import json
 
-from helpers import available_range, generate_available_times, get_available_slots_days, get_user, load_slots, load_users, saveBooking
+from helpers import available_range, get_available_slots_days, get_user, load_slots, removeSlotFromSlotsFile, removeSlotFromUserFile, saveBooking
 from website.models import Book, Slot, User
 
 
@@ -91,14 +91,11 @@ def book():
     target_slot = next((slot for slot in slots if slot['location'] == location), None)
     
     slot = Slot(location, target_slot['category'], target_slot['price_per_hour'], target_slot['booked_times'])
-    print("target_slot", target_slot)
 
     user = get_user(user_email)
 
-    print("user", user)
     book = Book(slot, user, date, start, end)
     book.book()
-    print("book", book)
 
 
     session['booking'] = {
@@ -120,14 +117,46 @@ def book():
 def confirmBooking():
     booking = session.get('booking')
 
-    slot = Slot(booking['location'], booking['category'], booking['price_per_hour'], booking['booked_times'])
-
     start = int(booking['start'].split(":")[0])
     end = int(booking['end'].split(":")[0])
 
-    saveBooking(booking['location'], booking['user_email'], booking['date'], start, end)
+    saveBooking(booking['location'], booking['user_email'], booking['date'], start, end, booking['category'])
 
     return redirect("/")
+
+@views.route("/profile")
+def profilr():
+    email = session.get('email')
+    user = get_user(email)
+    return render_template("profile.html", user=user)
+
+@views.route("/cancel-booking")
+def cancelBooking():
+    location = request.args.get("location")
+    start = request.args.get("start")
+    end = request.args.get("end")
+    date = request.args.get("date")
+    email = request.args.get("email")
+    start = int(start)
+    end = int(end)
+
+    # remove slot booked time from json file
+    if removeSlotFromSlotsFile(location, start, end, date) and removeSlotFromUserFile(email, start, end, location, date):
+        flash("deleted successfully", "success")          
+        return redirect("/profile")
+
+    flash("failed to delete the slot", "error")          
+    return redirect("/profile")
+         
+
+
+
+    
+
+
+
+
+
 
 
 

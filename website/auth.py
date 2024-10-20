@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, flash, url_for
+from flask import Blueprint, redirect, render_template, request, flash, session, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from helpers import get_user, is_found, save_user
@@ -71,10 +71,12 @@ def signUp():
 @auth.route("/log-out")
 def logOut():
     flash("you have logged out", "success")
-    return render_template("slots.html")
+    session.clear()
+    return render_template("slots.html", log_out=True)
 
 
 @auth.route("/auth-success")
 def auth_success():
     email = request.args.get('email')
+    session["email"] = email
     return render_template("slots.html", email=email)

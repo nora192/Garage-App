@@ -11,14 +11,15 @@
     console.log("Email stored in localStorage:", localStorage.getItem("userEmail"));
 </script>
 
-{% else %}
+{% endif %}
+
+{% if log_out %}
 <script>
     const userEmail = localStorage.getItem("userEmail");
     if(userEmail){
         localStorage.removeItem("userEmail");
     }
 </script>
-
 {% endif %}
 
 
