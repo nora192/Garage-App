@@ -41,20 +41,22 @@ class Slot:
 
     def generate_available_times(self, date=None):
         """Generate available times for a specific date based on booked times."""
-        if date is None:
-            today = datetime.today()
-            date = today.strftime('%Y-%m-%d')
+        today = datetime.today().strftime('%Y-%m-%d')
+
+        all_times = [f"{i}:00" for i in range(1, 25)]
         
-        print("date", date)
+        if date == today:
+            self.available_times = []
+            # check time only if date is today
+            time_now = datetime.now().hour
+            booked_for_date = self.booked_times.get(date, [])
+            self.available_times = [time for time in all_times if time not in booked_for_date and int(time.split(":")[0]) > time_now] #and time after now
 
-        self.available_times = []
 
-        all_times = [f"{i}:00" for i in range(1, 24)]
-        
-        booked_for_date = self.booked_times.get(date, [])
-
-        self.available_times = [time for time in all_times if time not in booked_for_date]
-        print("available_times", self.available_times)
+        else:
+            self.available_times = []
+            booked_for_date = self.booked_times.get(date, [])
+            self.available_times = [time for time in all_times if time not in booked_for_date]
         return self.available_times
 
     def to_dict(self, date=None):
@@ -74,6 +76,14 @@ class Slot:
             self.booked_times[date] = []
         self.booked_times[date].append(time)
     
+    def is_available(self, date, start, end):
+        times = self.generate_available_times(date)
+        for i in range(int(start.split(":")[0]), int(end.split(":")[0])+1):
+            if str(i)+":00" not in times:
+                return False
+        return True
+
+
 class Book:
 
 

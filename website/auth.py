@@ -17,8 +17,11 @@ def logIn():
         
         if user:
             if check_password_hash(user['password'], password):
+                session.clear()
+                session['email'] = email
+                session.permanent = True
                 flash("logged in successfully", category='success')
-                return redirect(url_for('auth.auth_success', email=email))
+                return render_template("slots.html", email=email)
             else:
                 flash("Incorrect password", category='error')
         else:
@@ -44,7 +47,6 @@ def signUp():
         if len(email) < 4:
             flash("Email must be greater than 3 characters.", category='error')
         elif(is_found(email)):
-            print("Email is already registered before")
             flash("Email is already registered before", category='error')
         elif len(firstName) < 2:
             flash("First name must be greater than 1 character.", category='error')
@@ -60,10 +62,14 @@ def signUp():
             new_user = User(email=email, firstName=firstName, lastName=lastName, phoneNumber=phoneNumber, password=generate_password_hash(password1, method='pbkdf2:sha256'))
             # add the user to jason file
             save_user(new_user, fileName='users.json')
+            session.clear()
+            session['email'] = email
+            session.permanent = True
 
             flash('Account created successfully!', category='success')
+            return render_template("slots.html", email=email)
 
-            return redirect(url_for('auth.auth_success', email=email))
+            # return redirect(url_for('auth.auth_success', email=email))
 
     return render_template("sign_up.html")
     
@@ -74,9 +80,3 @@ def logOut():
     session.clear()
     return render_template("slots.html", log_out=True)
 
-
-@auth.route("/auth-success")
-def auth_success():
-    email = request.args.get('email')
-    session["email"] = email
-    return render_template("slots.html", email=email)

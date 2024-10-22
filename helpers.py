@@ -2,7 +2,7 @@ from datetime import datetime, date
 from flask import Blueprint, flash, jsonify, redirect, render_template, request
 import json
 
-from website.models import User
+from website.models import Slot, User
 
 
 # helper function to load data
@@ -16,26 +16,28 @@ def load_users():
         users = json.load(f)
     return users
 
-# helper function to get available hours within the day
-def generate_available_times(slot, date):
-    available_times = []
-    booked_times = slot['booked_times'].get(date, [])
+# # helper function to get available hours within the day
+# def generate_available_times(slot, date):
+#     available_times = []
+#     booked_times = slot['booked_times'].get(date, [])
 
-    for i in range(1,24):
-        time = str(i) + ":00"
-        if time not in booked_times:
-            available_times.append(time)
+#     for i in range(1,24):
+#         time = str(i) + ":00"
+#         if time not in booked_times:
+#             available_times.append(time)
 
-    return available_times
+#     return available_times
 
 
-# helper function to return available slots in a specific date
+# helper function to return available slots in a specific date(filter by date)
 def get_available_slots_days(slots, date):
     available_slots = []
     for slot in slots:
-        booked_times = slot['booked_times'].get(date, [])
-        if len(booked_times) < 24:
-            available_slots.append(slot)
+        slotObj = Slot(slot['location'], slot['category'], slot['price_per_hour'], slot['booked_times'])
+        available_times = slotObj.generate_available_times(date)
+        
+        if len(available_times) > 1:
+            available_slots.append(slotObj.to_dict())
     return available_slots
 
 
@@ -92,7 +94,7 @@ def saveBooking(location, userEmail, date, start, end, category):
             if date not in s['booked_times']:
                 s['booked_times'][date] = []
 
-            for i in range(start, end+1):
+            for i in range(start, end):
                 timeStr = str(i) + ":00"
                 s['booked_times'][date].append(timeStr)
             
@@ -126,8 +128,7 @@ def removeSlotFromSlotsFile(location, start, end, date):
                     if time_slot in slot['booked_times'][date]:
                         slot['booked_times'][date].remove(time_slot)
                         is_deleted = True
-                    else:
-                        print(f"Time slot {time_slot} not found")
+                    
     
     
     # add to json 

@@ -28,37 +28,8 @@
 
 <!-- HTML: Filter Section -->
 
-<div class="filter">
-    <div>
-        <label for="category-filter">Filter by category: </label>
-        <select name="category-filter" id="category-filter">
-            <option value="all">All Categories</option>
-            <option value="Compact">Compact</option>
-            <option value="Motorcycle">Motorcycle</option>
-            <option value="SUV">SUV</option>
-            <option value="Truck">Truck</option>
-        </select>
-    </div>
-    
-    <div>
-        <label for="price-filter">Max Price (per hour):</label>
-        <div>
-            <input type="range" id="price-filter" min="0" max="20" step="1" value="20">
-            <span id="price-value">20</span>
-        </div>
-        
-    </div>
 
-    <!-- start filtering by day -->
 
-    <div class="day-filter">
-        <label for="date">select day</label>
-        <input type="date" id="date" name="date" value="{{ today }}" >
-    </div>
-  
-  <!-- end filtering by day -->
-    
-</div>
 
 
 
@@ -68,6 +39,46 @@
     <div class="container">
         <div class="section-intro">
             <h2>Available Slots</h2>
+        </div>
+
+
+        <div class="filter">
+            <div>
+                <label for="category-filter">Category: </label>
+                <select name="category-filter" id="category-filter">
+                    <option value="all">All Categories</option>
+                    <option value="Compact">Compact</option>
+                    <option value="Motorcycle">Motorcycle</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Truck">Truck</option>
+                </select>
+            </div>
+            
+            
+        
+            <!-- start filtering by day -->
+        
+            <div class="day-filter">
+                <label for="date">select day</label>
+                <input type="date" id="date" name="date" value="{{ today }}" >
+            </div>
+            <script>
+                let today = new Date().toISOString().split('T')[0];
+                
+                document.getElementById('date').setAttribute('min', today);
+            </script>
+          
+          <!-- end filtering by day -->
+
+          <div>
+            <label for="price-filter">Max Price (per hour):</label>
+            <div class="price-filter">
+                <input type="range" id="price-filter" min="0" max="20" step="1" value="20">
+                <span id="price-value">$20</span>
+            </div>
+            
+        </div>
+            
         </div>
         <div id="slots-container" class="content">
             {% for slot in slots %}
@@ -79,22 +90,27 @@
 
                 <!-- start select range -->
                 <div class="time-range-selection">
-                    <label for="start-time">Select Start Time:</label>
+                    
+                    <label  for="start-time">from:</label>
                     <select class="start-time" name="start-time">
                         {% for time in slot['available_times'] %}
                             <option value="{{ time }}">{{ time }}</option>
                         {% endfor %}
                     </select>
                   
-                    <label for="end-time">Select End Time:</label>
+                    <label class="end-label" for="end-time">to:</label>
                     <select class="end-time" name="end-time">
                         {% for time in slot['available_times'] %}
                             <option value="{{ time }}">{{ time }}</option>
                         {% endfor %}
                     </select>
+                    <div class="error-message" style="display:none; color: red; font-size:14px"></div>
+                    
+                    <a href="#" class="book-now book-range" onclick="dateTimeFilter()">Book Now</a>
                   
-                    <a href="#" class="btn btn-primary book-range" onclick="dateTimeFilter()">Book Now</a>
                 </div>
+
+
                 <!-- end select range -->
 
             </article>

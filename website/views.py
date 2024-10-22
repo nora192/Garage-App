@@ -3,7 +3,7 @@ from flask import Blueprint, flash, jsonify, redirect, render_template, request,
 import json
 
 from helpers import available_range, get_available_slots_days, get_user, load_slots, removeSlotFromSlotsFile, removeSlotFromUserFile, saveBooking
-from website.models import Book, Slot, User
+from website.models import Book, Slot
 
 
 views = Blueprint('views', __name__)
@@ -47,10 +47,9 @@ def filter_slots():
     slotsList = []
     for slot in slots:
         slotObj = Slot(slot['location'], slot['category'], slot['price_per_hour'], slot['booked_times'])
+        # generate available times for each slot
         slotObj.generate_available_times(date)
         slotsList.append(slotObj.to_dict())
-
-    
 
     return jsonify(slotsList)
 
@@ -60,18 +59,18 @@ def filter_slots():
 def check_range():
     start = request.args.get("start")
     end = request.args.get("end")
-    # slot_id = request.args.get("slot_id")
     date = request.args.get("date")
     location = request.args.get("slot_location")
+    
     slots = load_slots()
-
     target_slot = next((slot for slot in slots if slot['location'] == location), None)
     
 
     if(available_range(target_slot, date, start, end)):
-        return jsonify({"available" : True})
+        return jsonify({"available" : True})  # handeled in js
     
-    return jsonify({"available" : False})
+    return jsonify({"available" : False}) # handeled in js
+
 
 
 @views.route("/book")
@@ -81,35 +80,42 @@ def book():
     start = request.args.get("start")
     end = request.args.get("end")
     date = request.args.get("date")
-    user_email = request.args.get("email")
-
+    user_email = session.get('email')
+    
+    # need to be authenticated
+    if 'email' not in session:
+        flash("u need to log in first")
+        return redirect("/sign-up")
+    
     slots = load_slots()
     
     target_slot = next((slot for slot in slots if slot['location'] == location), None)
-    
     slot = Slot(location, target_slot['category'], target_slot['price_per_hour'], target_slot['booked_times'])
     slot.generate_available_times(date)
 
-    user = get_user(user_email)
+    if slot.is_available(date, start, end):
+        user = get_user(user_email)
 
-    book = Book(slot, user, date, start, end)
-    book.book()
+        book = Book(slot, user, date, start, end)
+        book.book()
 
 
-    session['booking'] = {
-        'location': slot.location,
-        'category': slot.category,
-        'price_per_hour': slot.price_per_hour,
-        'booked_times' : slot.booked_times,
-        'available_times' : slot.available_times,
-        'date': date,
-        'start': start,
-        'end': end,
-        'totalPrice': book.totalPrice,
-        'user_email': user['email']
-    }
-    
-    return render_template("book.html", book = book)
+        session['booking'] = {
+            'location': slot.location,
+            'category': slot.category,
+            'price_per_hour': slot.price_per_hour,
+            'booked_times' : slot.booked_times,
+            'available_times' : slot.available_times,
+            'date': date,
+            'start': start,
+            'end': end,
+            'totalPrice': book.totalPrice,
+            'user_email': user_email
+        }
+        
+        return render_template("book.html", book = book)
+    flash("Slot is already reserved before")
+    return redirect("/")
 
 
 @views.route("/confirm-booking")
@@ -120,11 +126,15 @@ def confirmBooking():
     end = int(booking['end'].split(":")[0])
 
     saveBooking(booking['location'], booking['user_email'], booking['date'], start, end, booking['category'])
+    session['booking'].clear()
 
     return redirect("/")
 
 @views.route("/profile")
 def profile():
+    if 'email' not in session:
+        return redirect("/sign-up")
+
     email = session.get('email')
     user = get_user(email)
     return render_template("profile.html", user=user)
@@ -135,7 +145,7 @@ def cancelBooking():
     start = request.args.get("start")
     end = request.args.get("end")
     date = request.args.get("date")
-    email = request.args.get("email")
+    email = session.get('email')
     start = int(start)
     end = int(end)
 
@@ -150,11 +160,15 @@ def cancelBooking():
 
 @views.route("/edit", methods=['GET', 'POST'])
 def edit():
+    if 'email' not in session:
+        flash("u need to log in first")
+        return redirect("/sign-up")
+    
     if request.method == "GET":
         # Get existing booking data
         start = request.args.get("start")
         end = request.args.get("end")
-        email = request.args.get("email")
+        email = session.get('email')
         location = request.args.get("location")
         date = request.args.get("date")
         category = request.args.get("category")
@@ -177,7 +191,7 @@ def edit():
         new_start = request.form.get("start-time")
         new_end = request.form.get("end-time")
         date = request.form.get("date")
-        email = request.form.get("email")
+        email = session.get('email')
         category = request.form.get("category")
 
         slots = load_slots()
@@ -193,6 +207,7 @@ def edit():
         # Add new booking
         if available_range(target_slot, date, new_start, new_end):
             saveBooking(location, email, date, int(new_start.split(":")[0]), int(new_end.split(":")[0]), category)
+            flash("updated successfully", "success")
             return jsonify({"status": "success", "message": "Booking updated successfully!"})
         else:
             return jsonify({"status": "error", "message": "The selected time range is not available."})

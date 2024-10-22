@@ -23,7 +23,7 @@ document.getElementById('bookingForm').addEventListener('submit', function(event
     .then(response => response.json())
     .then(data => {
         if (data.status === "success") {
-            alert(data.message);
+            // alert(data.message);
             window.location.href = "/profile";  
         } else {
             const errorContainer = document.getElementById('error-message');

@@ -1,4 +1,10 @@
-console.log("auth");
+const form = document.getElementById('form');
+const firstName = document.getElementById('firstName');
+const lastName = document.getElementById('lastName');
+const email = document.getElementById('email');
+const password1 = document.getElementById('password1');
+const password2 = document.getElementById('password2');
+
 form.addEventListener("submit", e => {
     if (!validateInput()) {
         e.preventDefault(); 
@@ -59,4 +65,26 @@ const validateInput = () => {
     }
 
     return isValid;  
+};
+
+const setError = (element, message) => {
+    const inputControl = element.parentElement;
+    const errorDisplay = inputControl.querySelector('.error');
+
+    errorDisplay.innerText = message;
+    element.classList.add('error-border');
+    errorDisplay.style.display = 'block';
+};
+
+const setSuccess = element => {
+    const inputControl = element.parentElement;
+    const errorDisplay = inputControl.querySelector('.error');
+
+    errorDisplay.innerText = '';
+    element.classList.remove('error-border');
+    errorDisplay.style.display = 'none';
+};
+
+const isValidEmail = email => {
+    return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
 };

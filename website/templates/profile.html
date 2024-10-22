@@ -3,27 +3,34 @@
 
 {% block content %}
 
-<div class="card">
+<div class="card profile-card">
     <h1>{{user['firstName']}} {{user['lastName']}}</h1>
     <p>{{user['email']}}</p>
     <p>{{user['phoneNumber']}}</p>
 </div>
 
-
-{% for slot in user['bookedSlots'] %}
-<div class="card">
-    <h1>{{slot['location']}}</h1>
-    <p>{{slot['date']}}</p>
-    <p>{{slot['category']}}</p>
-    <p>from {{slot['start']}} to {{ slot['end'] }}</p>
-    <a href="{{ url_for('views.cancelBooking') }}?location={{slot['location']}}&start={{slot['start']}}&end={{ slot['end'] }}&date={{slot['date']}}&email={{user['email']}}" class="btn btn-danger">cancel</a>
-    <a href="{{ url_for('views.edit') }}?location={{slot['location']}}&start={{slot['start']}}&end={{ slot['end'] }}&date={{slot['date']}}&email={{user['email']}}&category={{slot['category']}} " class="btn btn-success">Edit</a>
-
-    <!-- <button>Edit</button>
-    <button>Cancel</button> -->
+<div class="booked-cards content">
+    {% for slot in user['bookedSlots'] %}
+    <div class="card reserved-slot"
+         data-location="{{slot['location']}}" 
+         data-start="{{slot['start']}}" 
+         data-end="{{slot['end']}}" 
+         data-date="{{slot['date']}}"
+         data-category="{{slot['category']}}">
+         
+        <h1>{{slot['location']}}</h1>
+        <p class="date">{{slot['date']}}</p>
+        <p>Category: {{slot['category']}}</p>
+        <p>from {{slot['start']}} to <span class="end" data-end-time="{{slot['end']}}"> {{ slot['end'] }}</span></p>
+        
+        <div class="btns">
+            <a href="{{ url_for('views.cancelBooking') }}?location={{slot['location']}}&start={{slot['start']}}&end={{ slot['end'] }}&date={{slot['date']}}" class="cancel-btn">Cancel</a>
+            <a href="{{ url_for('views.edit') }}?location={{slot['location']}}&start={{slot['start']}}&end={{ slot['end'] }}&date={{slot['date']}}&category={{slot['category']}}" class="edit-btn">Edit</a>
+        </div>
+    </div>
+    {% endfor %}
 </div>
 
-
-{% endfor %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
 
 {% endblock %}

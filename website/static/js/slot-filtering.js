@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Update price value display
     priceFilter.addEventListener("input", function() {
-        priceValue.textContent = priceFilter.value;
+        priceValue.textContent = "$" + priceFilter.value;
         filterSlotCards();
     });
 
@@ -59,18 +59,22 @@ document.addEventListener("DOMContentLoaded", function() {
                             <p>Price per hour: $${slot.price_per_hour}</p>
                             
                             <div class="time-range-selection">
-                                <label for="start-time">Select Start Time:</label>
+                                <label for="start-time">from:</label>
                                 <select class="start-time" name="start-time">
                                     ${startTimeOptions}
                                 </select>
                             
-                                <label for="end-time">Select End Time:</label>
+                                <label class="end-label" for="end-time">to:</label>
                                 <select class="end-time" name="end-time">
                                     ${endTimeOptions}
                                 </select>
+                            <div class="error-message" style="display:none; color: red; font-size:14px"></div>
+
+                            <a href="#" class="book-now book-range" data-slot="${slot.location}">Book Now</a>
                             
-                                <a href="#" class="btn btn-primary book-range" data-slot="${slot.location}">Book Now</a>
                             </div>
+
+
                         </article>
                     `;
                     slotsContainer.insertAdjacentHTML('beforeend', slotElement);
@@ -92,25 +96,35 @@ document.addEventListener("DOMContentLoaded", function() {
                 const endTime = container.querySelector('.end-time').value;
                 const location = container.closest('article').querySelector('h4').innerText;
                 const date = document.getElementById("date").value;
+                const errorContainer = container.querySelector('.error-message');
+
         
                 if (!validateTimes(startTime, endTime)) {
-                    alert("End time must be after start time.");
+
+
+                    errorContainer.innerText = "End time must be after start time.";
+                    errorContainer.style.display = "block";
+
                     event.preventDefault(); 
                     return; 
+                }
+                else {
+                    errorContainer.style.display = "none";
                 }
         
                 checkUnavailableSlots(startTime, endTime, location, date, function(available){
                     if(available){
-                        console.log("available");
                         const email = localStorage.getItem('userEmail');
                         if(email){
-                            window.location.href = `/book?location=${location}&date=${date}&start=${startTime}&end=${endTime}&email=${email}`;   
+                            window.location.href = `/book?location=${location}&date=${date}&start=${startTime}&end=${endTime}`;   
                         }
                         else{
-                            alert("u need to be logged in first");
+                            window.location.href = `/sign-up`;   
                         }
                     } else {
-                        alert("Some hours in the selected range are unavailable.");
+
+                        errorContainer.innerText = "Some hours in the selected range are unavailable.";
+                        errorContainer.style.display = "block";
                         event.preventDefault();
                     }
                 });
