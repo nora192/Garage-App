@@ -1,8 +1,6 @@
-from datetime import datetime, date
-from flask import Blueprint, flash, jsonify, redirect, render_template, request
 import json
 
-from website.models import Slot, User
+from website.models import Slot
 
 
 # helper function to load data
@@ -15,19 +13,6 @@ def load_users():
     with open('users.json', 'r') as f:
         users = json.load(f)
     return users
-
-# # helper function to get available hours within the day
-# def generate_available_times(slot, date):
-#     available_times = []
-#     booked_times = slot['booked_times'].get(date, [])
-
-#     for i in range(1,24):
-#         time = str(i) + ":00"
-#         if time not in booked_times:
-#             available_times.append(time)
-
-#     return available_times
-
 
 # helper function to return available slots in a specific date(filter by date)
 def get_available_slots_days(slots, date):
@@ -86,8 +71,9 @@ def get_user(email):
     return None
 
 def saveBooking(location, userEmail, date, start, end, category):
+    
+    # save slot in slots.json(mark it as booked [start:end])
     slots = load_slots()
-
     for s in slots:
         if s['location'] == location:
 
@@ -96,20 +82,16 @@ def saveBooking(location, userEmail, date, start, end, category):
 
             for i in range(start, end):
                 timeStr = str(i) + ":00"
-                s['booked_times'][date].append(timeStr)
-            
-    
+                s['booked_times'][date].append(timeStr)       
     with open("website/static/slots.json", "w") as f:
         json.dump(slots, f)
     
+    # add slot to user booked slots 
     user = get_user(userEmail)
-  
-    
     users = load_users()
     for u in users:
         if u['email'] == user['email']:
             u['bookedSlots'].append({"location": location, "date": date, "start": start, "end": end, "category" : category})
-
     with open("users.json", "w") as f:
         json.dump(users, f)
 

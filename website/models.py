@@ -1,6 +1,4 @@
 from datetime import datetime
-
-
 class User:
     firstName=""
     lastName=""
@@ -27,10 +25,6 @@ class User:
             'password': self.password
         }
 
-    # def book(self, date, start, end):
-
-    #     self.bookedSlots.append(slot)
-
 class Slot:
     def __init__(self, location, category, price_per_hour, booked_times):
         self.location = location
@@ -43,7 +37,7 @@ class Slot:
         """Generate available times for a specific date based on booked times."""
         today = datetime.today().strftime('%Y-%m-%d')
 
-        all_times = [f"{i}:00" for i in range(1, 25)]
+        all_times = [f"{i}:00" for i in range(1, 24)]
         
         if date == today:
             self.available_times = []

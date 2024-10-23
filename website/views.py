@@ -1,6 +1,5 @@
 from datetime import datetime, date
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, session
-import json
 
 from helpers import available_range, get_available_slots_days, get_user, load_slots, removeSlotFromSlotsFile, removeSlotFromUserFile, saveBooking
 from website.models import Book, Slot
@@ -8,7 +7,6 @@ from website.models import Book, Slot
 
 views = Blueprint('views', __name__)
 
-# /****************************************************************************************************************/
 
 @views.route("/", methods=['GET'])
 def available_slots():
@@ -87,15 +85,15 @@ def book():
         flash("u need to log in first")
         return redirect("/sign-up")
     
+    # load slot and find available times
     slots = load_slots()
-    
     target_slot = next((slot for slot in slots if slot['location'] == location), None)
     slot = Slot(location, target_slot['category'], target_slot['price_per_hour'], target_slot['booked_times'])
     slot.generate_available_times(date)
 
+    # check if slot is not booked within that time
     if slot.is_available(date, start, end):
         user = get_user(user_email)
-
         book = Book(slot, user, date, start, end)
         book.book()
 
@@ -121,7 +119,6 @@ def book():
 @views.route("/confirm-booking")
 def confirmBooking():
     booking = session.get('booking')
-
     start = int(booking['start'].split(":")[0])
     end = int(booking['end'].split(":")[0])
 

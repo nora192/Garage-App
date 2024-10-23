@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, flash, session, url_for
+from flask import Blueprint, render_template, request, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from helpers import get_user, is_found, save_user
