@@ -10,7 +10,7 @@ def load_slots():
     return slots
 
 def load_users():
-    with open('users.json', 'r') as f:
+    with open('website/static/users.json', 'r') as f:
         users = json.load(f)
     return users
 
@@ -92,7 +92,7 @@ def saveBooking(location, userEmail, date, start, end, category):
     for u in users:
         if u['email'] == user['email']:
             u['bookedSlots'].append({"location": location, "date": date, "start": start, "end": end, "category" : category})
-    with open("users.json", "w") as f:
+    with open("website/static/users.json", "w") as f:
         json.dump(users, f)
 
 
@@ -129,7 +129,7 @@ def removeSlotFromUserFile(email, start, end, location, date):
                     is_deleted = True
     
     # add to json 
-    with open("users.json", "w") as f:
+    with open("website/static/users.json", "w") as f:
         json.dump(users, f)
         
     return is_deleted

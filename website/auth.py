@@ -61,7 +61,7 @@ def signUp():
             # Create new user with hashed password
             new_user = User(email=email, firstName=firstName, lastName=lastName, phoneNumber=phoneNumber, password=generate_password_hash(password1, method='pbkdf2:sha256'))
             # add the user to jason file
-            save_user(new_user, fileName='users.json')
+            save_user(new_user, fileName='website/static/users.json')
             session.clear()
             session['email'] = email
             session.permanent = True

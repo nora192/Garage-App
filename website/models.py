@@ -64,11 +64,7 @@ class Slot:
             'date' : date
         }
 
-    def book(self, date, time):
-        """Book a slot at a specific date and time."""
-        if date not in self.booked_times:
-            self.booked_times[date] = []
-        self.booked_times[date].append(time)
+  
     
     def is_available(self, date, start, end):
         times = self.generate_available_times(date)
@@ -76,7 +72,6 @@ class Slot:
             if str(i)+":00" not in times:
                 return False
         return True
-
 
 class Book:
 
