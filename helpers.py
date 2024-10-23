@@ -28,13 +28,22 @@ def get_available_slots_days(slots, date):
 
 # helper function to check if the given range is available to be booked
 def available_range(slot, date, start, end):
-    booked_times = slot['booked_times'].get(date, [])
+    booked_times = slot['booked_times'].get(date, {'start': [], 'end': []})
+
     start_time = int(start.split(":")[0])
     end_time = int(end.split(":")[0])
 
-    for i in range(start_time, end_time):
-        str_time = str(i) + ":00"
-        if str_time in booked_times:
+    booked_start_times = booked_times.get('start', [])
+
+    booked_end_times = booked_times.get('end', [])
+
+    if start_time in booked_start_times:
+        return False
+    if end_time in booked_end_times:
+        return False
+    for i in range(start_time+1, end_time): 
+        str_time = f"{i}:00"
+        if str_time in booked_start_times:
             return False
 
     return True
@@ -78,11 +87,14 @@ def saveBooking(location, userEmail, date, start, end, category):
         if s['location'] == location:
 
             if date not in s['booked_times']:
-                s['booked_times'][date] = []
+                s['booked_times'][date] = {'start': [], 'end': []}
+
 
             for i in range(start, end):
-                timeStr = str(i) + ":00"
-                s['booked_times'][date].append(timeStr)       
+                timeStr = f"{i}:00"
+                s['booked_times'][date]['start'].append(timeStr)
+            s['booked_times'][date]['end'].append(f"{end}:00")
+            
     with open("website/static/slots.json", "w") as f:
         json.dump(slots, f)
     
@@ -105,10 +117,12 @@ def removeSlotFromSlotsFile(location, start, end, date):
             # Check if the date exists in the booked_times dictionary
             if date in slot['booked_times']:
                 # Remove the specified times for that date
-                for i in range(int(start), int(end) + 1):
+                for i in range(int(start), int(end)+1):
                     time_slot = f"{i}:00"
-                    if time_slot in slot['booked_times'][date]:
-                        slot['booked_times'][date].remove(time_slot)
+                    if time_slot in slot['booked_times'][date]['start']:
+                        slot['booked_times'][date]['start'].remove(time_slot)
+                    if time_slot in slot['booked_times'][date]['end']:
+                        slot['booked_times'][date]['end'].remove(time_slot)
                         is_deleted = True
                     
     

@@ -2,41 +2,37 @@
 {% block title %}Edit Booking{% endblock %}
 
 {% block content %}
-
 <div class="edit-card">
     <div class="card">
         <h3>Edit Your Booking</h3>
 
         <p id="location">Slot Location: {{ slot['location'] }}</p>
         <p>Slot Category: {{ slot['category'] }}</p>
-        <p>Price per Hour: ${{ slot['price_per_hour'] }} </p>
-        <p id="date">Date: {{ slot['date'] }} </p>
+        <p>Price per Hour: ${{ slot['price_per_hour'] }}</p>
+        <p id="date">Date: {{ slot['date'] }}</p>
+
         <div class="time-range-selection">
             <div id="error-message" style="display:none; color: red;"></div>
             <form id="bookingForm" method="POST" action="{{ url_for('views.edit') }}">
                 <div class="edit-time">
                     <div>
                         <label for="start-time">from:</label>
-
-                        <select class="start-time" name="start-time" required>
-                            {% for time in slot['available_times'] %}
+                        <select class="start-time" name="start-time" id="start-time" required>
+                            {% for time in slot['available_times'].start %}
                                 <option value="{{ time }}" {% if time == start %}selected{% endif %}>{{ time }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                     <div>
+                    <div>
                         <label for="end-time">to:</label>
-                    <select class="end-time" name="end-time" required>
-                        {% for time in slot['available_times'] %}
-                            <option value="{{ time }}" {% if time == end %}selected{% endif %}>{{ time }}</option>
-                        {% endfor %}
-                    </select>
-                     </div>
-                    
-
+                        <select class="end-time" name="end-time" id="end-time" required>
+                            {% for time in slot['available_times'].end %}
+                                <option value="{{ time }}" {% if time == end %}selected{% endif %}>{{ time }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
-                
-        
+
                 <!-- Hidden fields to pass old booking and other necessary data -->
                 <input type="hidden" name="old-start" value="{{ start }}">
                 <input type="hidden" name="old-end" value="{{ end }}">
@@ -44,23 +40,61 @@
                 <input type="hidden" name="email" value="{{ session['email'] }}">
                 <input type="hidden" name="category" value="{{ slot['category'] }}">
                 <input type="hidden" name="date" value="{{ slot['date'] }}">
-        
+
                 <div class="edit-btns">
                     <a href="{{ url_for('views.profile') }}" class="">Back</a>
-
                     <button type="submit" class="book-range">Save</button>
                 </div>
-                
-
             </form>
         </div>
-        
     </div>
 </div>
 
 <!-- Time Range Selection -->
-
-
 <script src="{{ url_for('static', filename='js/edit.js') }}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const startTimeSelect = document.getElementById('start-time');
+    const endTimeSelect = document.getElementById('end-time');
+    const errorMessage = document.getElementById('error-message');
+
+    // Function to filter end times based on selected start time
+    function filterEndTimes() {
+        const selectedStartTime = startTimeSelect.value;
+        const startHour = parseInt(selectedStartTime.split(':')[0]);
+        
+        Array.from(endTimeSelect.options).forEach(option => {
+            const optionHour = parseInt(option.value.split(':')[0]);
+            if (optionHour <= startHour) {
+                option.style.display = 'none';  // Hide end times before or equal to the selected start time
+            } else {
+                option.style.display = 'block'; // Show valid end times
+            }
+        });
+    }
+
+    // Attach event listener to start time to update available end times
+    startTimeSelect.addEventListener('change', function() {
+        filterEndTimes();
+        errorMessage.style.display = 'none'; // Hide error when start time changes
+    });
+
+    // Form submission validation
+    document.getElementById('bookingForm').addEventListener('submit', function(event) {
+        const startTime = startTimeSelect.value;
+        const endTime = endTimeSelect.value;
+        
+        if (startTime >= endTime) {
+            errorMessage.textContent = 'End time must be after the start time.';
+            errorMessage.style.display = 'block';
+            event.preventDefault();  // Prevent form submission if times are invalid
+        }
+    });
+
+    // Initially filter end times based on selected start time
+    filterEndTimes();
+});
+</script>
 
 {% endblock %}

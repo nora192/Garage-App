@@ -1,4 +1,6 @@
 from datetime import datetime
+from datetime import datetime
+
 class User:
     firstName=""
     lastName=""
@@ -31,7 +33,7 @@ class Slot:
         self.category = category
         self.price_per_hour = price_per_hour
         self.booked_times = booked_times  # Dictionary of booked times by date
-        self.available_times = []
+        self.available_times = {}
 
     def generate_available_times(self, date=None):
         """Generate available times for a specific date based on booked times."""
@@ -39,18 +41,33 @@ class Slot:
 
         all_times = [f"{i}:00" for i in range(1, 24)]
         
-        if date == today:
-            self.available_times = []
-            # check time only if date is today
-            time_now = datetime.now().hour
-            booked_for_date = self.booked_times.get(date, [])
-            self.available_times = [time for time in all_times if time not in booked_for_date and int(time.split(":")[0]) > time_now] #and time after now
+        # Initialize available_times as a dictionary
+        self.available_times = {'start': [], 'end': []}
 
+        if date == today:
+            # Check time only if the date is today
+            time_now = datetime.now().hour
+            booked_for_date = self.booked_times.get(date, {'start': [], 'end': []})
+            
+            self.available_times['start'] = [
+                time for time in all_times 
+                if time not in booked_for_date['start'] and int(time.split(":")[0]) > time_now
+            ]
+            self.available_times['end'] = [
+                time for time in all_times 
+                if time not in booked_for_date['end'] and int(time.split(":")[0]) > time_now
+            ]
 
         else:
-            self.available_times = []
-            booked_for_date = self.booked_times.get(date, [])
-            self.available_times = [time for time in all_times if time not in booked_for_date]
+            booked_for_date = self.booked_times.get(date, {'start': [], 'end': []})
+            
+            self.available_times['start'] = [
+                time for time in all_times if time not in booked_for_date['start']
+            ]
+            self.available_times['end'] = [
+                time for time in all_times if time not in booked_for_date['end']
+            ]
+
         return self.available_times
 
     def to_dict(self, date=None):
@@ -61,15 +78,13 @@ class Slot:
             'price_per_hour': self.price_per_hour,
             'booked_times': self.booked_times,
             'available_times': self.available_times,
-            'date' : date
+            'date': date
         }
 
-  
-    
     def is_available(self, date, start, end):
         times = self.generate_available_times(date)
-        for i in range(int(start.split(":")[0]), int(end.split(":")[0])+1):
-            if str(i)+":00" not in times:
+        for i in range(int(start.split(":")[0]), int(end.split(":")[0]) + 1):
+            if f"{i}:00" not in times['start'] and f"{i}:00" not in times['end']:
                 return False
         return True
 

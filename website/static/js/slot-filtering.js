@@ -42,14 +42,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 response.forEach(slot => {
                     let startTimeOptions = '';
                     let endTimeOptions = '';
-                    if (Array.isArray(slot.available_times)) {
-                        slot.available_times.forEach(time => {
+                    if (slot.available_times && slot.available_times.start && slot.available_times.end) {
+                        slot.available_times.start.forEach(time => {
                             startTimeOptions += `<option value="${time}">${time}</option>`;
+                        });
+                        slot.available_times.end.forEach(time => {
                             endTimeOptions += `<option value="${time}">${time}</option>`;
                         });
                     } else {
-                        startTimeOptions = '<option value="">No available times</option>';
-                        endTimeOptions = '<option value="">No available times</option>';
+                        startTimeOptions = '<option value="">No available start times</option>';
+                        endTimeOptions = '<option value="">No available end times</option>';
                     }
 
                     const slotElement = `
@@ -59,22 +61,20 @@ document.addEventListener("DOMContentLoaded", function() {
                             <p>Price per hour: $${slot.price_per_hour}</p>
                             
                             <div class="time-range-selection">
-                                <label for="start-time">from:</label>
+                                <label for="start-time">From:</label>
                                 <select class="start-time" name="start-time">
                                     ${startTimeOptions}
                                 </select>
                             
-                                <label class="end-label" for="end-time">to:</label>
+                                <label class="end-label" for="end-time">To:</label>
                                 <select class="end-time" name="end-time">
                                     ${endTimeOptions}
                                 </select>
-                            <div class="error-message" style="display:none; color: red; font-size:14px"></div>
+                                
+                                <div class="error-message" style="display:none; color: red; font-size:14px"></div>
 
-                            <a href="#" class="book-now book-range" data-slot="${slot.location}">Book Now</a>
-                            
+                                <a href="#" class="book-now book-range" data-slot="${slot.location}">Book Now</a>
                             </div>
-
-
                         </article>
                     `;
                     slotsContainer.insertAdjacentHTML('beforeend', slotElement);

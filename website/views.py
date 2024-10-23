@@ -47,6 +47,7 @@ def filter_slots():
         slotObj = Slot(slot['location'], slot['category'], slot['price_per_hour'], slot['booked_times'])
         # generate available times for each slot
         slotObj.generate_available_times(date)
+        print(slotObj.available_times)
         slotsList.append(slotObj.to_dict())
 
     return jsonify(slotsList)

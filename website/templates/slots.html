@@ -83,38 +83,26 @@
         <div id="slots-container" class="content">
             {% for slot in slots %}
             <article class="card">
-                <h4 id="location">{{ slot['location'] }}</h4>
-                <p id="category">Slot Category : {{ slot['category'] }}</p>
-                <p>Price per hour: ${{ slot['price_per_hour'] }}</p>
-
-
-                <!-- start select range -->
+                <h4 id="location">${slot.location}</h4>
+                <p id="category">Slot Category: ${slot.category}</p>
+                <p>Price per hour: $${slot.price_per_hour}</p>
+                
                 <div class="time-range-selection">
-                    
-                    <label  for="start-time">from:</label>
+                    <label for="start-time">From:</label>
                     <select class="start-time" name="start-time">
-                        {% for time in slot['available_times'] %}
-                            <option value="{{ time }}">{{ time }}</option>
-                        {% endfor %}
+                        ${startTimeOptions}
                     </select>
-                  
-                    <label class="end-label" for="end-time">to:</label>
+                
+                    <label class="end-label" for="end-time">To:</label>
                     <select class="end-time" name="end-time">
-                        {% for time in slot['available_times'] %}
-                            <option value="{{ time }}">{{ time }}</option>
-                        {% endfor %}
+                        ${endTimeOptions}
                     </select>
-                    <div class="error-message" style="display:none; color: red; font-size:14px"></div>
                     
-                    <a href="#" class="book-now book-range" onclick="dateTimeFilter()">Book Now</a>
-                  
+                    <div class="error-message" style="display:none; color: red; font-size:14px"></div>
+
+                    <a href="#" class="book-now book-range" data-slot="${slot.location}">Book Now</a>
                 </div>
-
-
-                <!-- end select range -->
-
-            </article>
-                  
+            </article>                  
             {% endfor %}
         </div>
 
